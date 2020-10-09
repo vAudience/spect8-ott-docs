@@ -171,7 +171,7 @@
 <p>The chat module sends app and tracking event messages to the parent HTML page via <code>postMessage</code>.</p>
 <p>Listening to messages from the iFrame in the parent window:</p>
 <pre><code class="javascript">window.addEventListener(&quot;message&quot;, (ev) =&gt; {
-  if (ev.origin == &quot;http://localhost:4200&quot;) {
+  if (ev.origin == &quot;https://static.ott.spect8.com&quot;) {
     // var message = JSON.parse(ev.data);
   }
 });

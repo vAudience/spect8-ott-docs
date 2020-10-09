@@ -71,7 +71,7 @@ Listening to messages from the iFrame in the parent window:
 
 ```javascript
 window.addEventListener("message", (ev) => {
-  if (ev.origin == "http://localhost:4200") {
+  if (ev.origin == "https://static.ott.spect8.com") {
     // var message = JSON.parse(ev.data);
   }
 });
