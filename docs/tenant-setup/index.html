@@ -52,7 +52,7 @@
                     </li>
                 </ul>
                 <ul>
-                    <li class="toctree-l1"><a class="reference internal" href="../android-integration/">Android Integration</a>
+                    <li class="toctree-l1"><a class="reference internal" href="../chat-web-integration/">Chat Web Integration</a>
                     </li>
                 </ul>
                 <ul class="current">
@@ -63,10 +63,6 @@
     <li class="toctree-l2"><a class="reference internal" href="#user-authentication">User Authentication</a>
     </li>
     </ul>
-                    </li>
-                </ul>
-                <ul>
-                    <li class="toctree-l1"><a class="reference internal" href="../web-integration/">Web Integration</a>
                     </li>
                 </ul>
       </div>
@@ -103,17 +99,17 @@
               
                 <h1 id="tenant-setup">Tenant Setup</h1>
 <h2 id="firebase">Firebase</h2>
-<p>The overlay uses Firebase as a data synchronization and authentication hub.</p>
+<p>The chat module and overlay uses Firebase as a data synchronization and authentication hub.</p>
 <p>We will setup this instance for you or support you setting up this instance.</p>
-<p>For the overlay to work we create a configuration file including Firebase access details. This configuration
-file must be made available to the overlay, which is described in any of the "Integration" sections. </p>
+<p>For the chat module and overlay to work we create a configuration file including Firebase access details. This configuration
+file must be made available to the overlay, which is described in any of the "Integration" sections.</p>
 <h2 id="user-authentication">User Authentication</h2>
 <p>Our backend servers require some means to identify a user-id and tenant-id for incoming web requests.</p>
 <p>For this we discuss with you which kind of token or session data is available in your existing OTT infrastructure,
 which can be used to provide user identity.</p>
-<p>We will implement a resolution mechanism, which validates and/or parses token or session data provided by you 
+<p>We will implement a resolution mechanism, which validates and/or parses token or session data provided by you
 to create a Firebase IdToken, which serves as a general authentication token for direct Firebase access or
-for subsequent calls to our overlay backend.    </p>
+for subsequent calls to our overlay backend.</p>
               
             </div>
           </div>
@@ -121,10 +117,8 @@ for subsequent calls to our overlay backend.    </p>
   
     <div class="rst-footer-buttons" role="navigation" aria-label="footer navigation">
       
-        <a href="../web-integration/" class="btn btn-neutral float-right" title="Web Integration">Next <span class="icon icon-circle-arrow-right"></span></a>
       
-      
-        <a href="../android-integration/" class="btn btn-neutral" title="Android Integration"><span class="icon icon-circle-arrow-left"></span> Previous</a>
+        <a href="../chat-web-integration/" class="btn btn-neutral" title="Chat Web Integration"><span class="icon icon-circle-arrow-left"></span> Previous</a>
       
     </div>
   
@@ -150,10 +144,8 @@ for subsequent calls to our overlay backend.    </p>
     <span class="rst-current-version" data-toggle="rst-current-version">
       
       
-        <span><a href="../android-integration/" style="color: #fcfcfc;">&laquo; Previous</a></span>
+        <span><a href="../chat-web-integration/" style="color: #fcfcfc;">&laquo; Previous</a></span>
       
-      
-        <span style="margin-left: 15px"><a href="../web-integration/" style="color: #fcfcfc">Next &raquo;</a></span>
       
     </span>
 </div>

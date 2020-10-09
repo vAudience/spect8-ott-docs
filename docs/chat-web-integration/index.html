@@ -9,7 +9,7 @@
   
   
   <link rel="shortcut icon" href="../img/favicon.ico">
-  <title>Android Integration - SPECT8 OTT</title>
+  <title>Chat Web Integration - SPECT8 OTT</title>
   <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Lato:400,700|Roboto+Slab:400,700|Inconsolata:400,700" />
 
   <link rel="stylesheet" href="../css/theme.css" />
@@ -18,8 +18,8 @@
   
   <script>
     // Current page data
-    var mkdocs_page_name = "Android Integration";
-    var mkdocs_page_input_path = "android-integration.md";
+    var mkdocs_page_name = "Chat Web Integration";
+    var mkdocs_page_input_path = "chat-web-integration.md";
     var mkdocs_page_url = null;
   </script>
   
@@ -52,15 +52,25 @@
                     </li>
                 </ul>
                 <ul class="current">
-                    <li class="toctree-l1 current"><a class="reference internal current" href="./">Android Integration</a>
+                    <li class="toctree-l1 current"><a class="reference internal current" href="./">Chat Web Integration</a>
     <ul class="current">
-    <li class="toctree-l2"><a class="reference internal" href="#dependencies">Dependencies</a>
+    <li class="toctree-l2"><a class="reference internal" href="#add-iframe">Add iFrame</a>
     </li>
-    <li class="toctree-l2"><a class="reference internal" href="#add-overlay-component">Add overlay component</a>
+    <li class="toctree-l2"><a class="reference internal" href="#initialize-chat-module">Initialize Chat module</a>
         <ul>
-    <li class="toctree-l3"><a class="reference internal" href="#change-layout-xml">change layout xml</a>
+    <li class="toctree-l3"><a class="reference internal" href="#example">Example</a>
     </li>
-    <li class="toctree-l3"><a class="reference internal" href="#configure-overlay-in-actvitiy">configure overlay in actvitiy</a>
+        </ul>
+    </li>
+    <li class="toctree-l2"><a class="reference internal" href="#set-user-data">Set User data</a>
+        <ul>
+    <li class="toctree-l3"><a class="reference internal" href="#example_1">Example</a>
+    </li>
+        </ul>
+    </li>
+    <li class="toctree-l2"><a class="reference internal" href="#receive-event-data-from-chat-module">Receive Event data from chat module</a>
+        <ul>
+    <li class="toctree-l3"><a class="reference internal" href="#example-message-anonymous-user-tries-to-send-a-message">Example Message: Anonymous user tries to send a message</a>
     </li>
         </ul>
     </li>
@@ -69,10 +79,6 @@
                 </ul>
                 <ul>
                     <li class="toctree-l1"><a class="reference internal" href="../tenant-setup/">Tenant Setup</a>
-                    </li>
-                </ul>
-                <ul>
-                    <li class="toctree-l1"><a class="reference internal" href="../web-integration/">Web Integration</a>
                     </li>
                 </ul>
       </div>
@@ -96,7 +102,7 @@
     
       
     
-    <li>Android Integration</li>
+    <li>Chat Web Integration</li>
     <li class="wy-breadcrumbs-aside">
       
     </li>
@@ -107,73 +113,92 @@
           <div role="main">
             <div class="section">
               
-                <h1 id="android-integration">Android Integration</h1>
-<h2 id="dependencies">Dependencies</h2>
-<p>Include the SPECT8-OTT Android dependency in your build file:</p>
-<p><strong>Maven (pom.xml):</strong></p>
-<pre><code>&lt;dependency&gt;  
-    &lt;groupId&gt;org.vaudience&lt;/groupId&gt;  
-    &lt;artifactId&gt;spect8-ott-android&lt;/artifactId&gt;  
-    &lt;version&gt;1.0&lt;/version&gt;  
-&lt;/dependency&gt;
+                <h1 id="chat-web-integration">Chat Web Integration</h1>
+<p>This guide assumes that there is some kind of HTML page rendered by your infrastructure, for which you want to embed our Chat module.</p>
+<h2 id="add-iframe">Add iFrame</h2>
+<p>Add the following <code>&lt;iFrame&gt;</code> block to your HTML page:</p>
+<pre><code class="html">&lt;iframe
+  id=&quot;spect8Chat&quot;
+  src=&quot;https://static.ott.spect8.com/chat/{tenantId}/index.html&quot;
+  frameborder=&quot;0&quot;
+  width=&quot;100%&quot;
+  height=&quot;100%&quot;
+&gt;&lt;/iframe&gt;
 </code></pre>
-<p><strong>Gradle (build.gradle):</strong></p>
-<pre><code>compile "org.vaudience:spect8-ott-android:1.0"
+
+<h2 id="initialize-chat-module">Initialize Chat module</h2>
+<p>To initialize the chat module you need to send an init message with the following information:</p>
+<ul>
+<li><code>appType: "WEB"</code> (required)</li>
+<li><code>broadcastId</code> (required), a unique identifier of the video content, to which the chat should belong</li>
+<li><code>tenantId</code> (required), a unique identifier of the tenant, which is generated in the tenanat setup</li>
+</ul>
+<h3 id="example">Example</h3>
+<pre><code class="javascript">document.getElementById(&quot;spect8Chat&quot;).contentWindow.postMessage(
+  JSON.stringify({
+    type: &quot;init&quot;,
+    payload: {
+      appType: &quot;WEB&quot;,
+      broadcastId: &quot;broadcast-123&quot;,
+      tenantId: &quot;tenant-123&quot;,
+    },
+  }),
+  &quot;https://static.ott.spect8.com&quot;
+);
 </code></pre>
-<h2 id="add-overlay-component">Add overlay component</h2>
-<p>To add the overlay component to one of your activities (containing the video player) 
-follow these steps:</p>
-<h3 id="change-layout-xml">change layout xml</h3>
-<p>Add <code>&lt;net.vaudience.spect8ott.OverlayView&gt;</code> to add the OverlayView your layout.</p>
-<h3 id="configure-overlay-in-actvitiy">configure overlay in actvitiy</h3>
-<p>In the Java/Kotlin source code of your activity (most likely in your <code>onCreate()</code> method)
-add the following code to bootstrap the overlay:</p>
-<pre><code>// configure Overlay
-val overlayView = findViewById&lt;OverlayView&gt;(R.id.overlayView)
-overlayView.callbacks = object : OverlayCallbacks {
-    @JavascriptInterface
-    override fun getCurrentPosition(): Long {
-        return videoView.currentPosition
-    }
-    @JavascriptInterface
-    override fun fakeTouch() {
-        mediaController.show(3000)
-    }
-    @JavascriptInterface
-    getBroadcastId: function () {
-        return "the-broadcast-id"; 
-    }
-    @JavascriptInterface
-    getTenantId: function () {
-        return "your-tenant-id";
-    }
-    @JavascriptInterface
-    getUserToken: function () {
-        return "some-token-from-your-infrastructure-identifying-the-user";
-    }
-    @JavascriptInterface
-    getAppType: function () {
-        return "type-of-app-that-integrates-the-overlay";
-    }
+
+<h2 id="set-user-data">Set User data</h2>
+<p>To "authenticate" a logged in (on your HTML page) user you need to send a user message with the following information:</p>
+<ul>
+<li><code>userId</code> (required), a unique identifer of your user</li>
+<li><code>username</code> (required), a username that is displayed in front of the chat message</li>
+<li><code>profileImageSrc</code> (optional), an URL pointing to the users profile image</li>
+</ul>
+<h3 id="example_1">Example</h3>
+<pre><code class="javascript">document.getElementById(&quot;spect8Chat&quot;).contentWindow.postMessage(
+  JSON.stringify({
+    type: &quot;user&quot;,
+    payload: {
+      userId: &quot;user-123&quot;,
+      username: &quot;test user&quot;,
+    },
+  }),
+  &quot;https://static.ott.spect8.com&quot;
+);
+</code></pre>
+
+<h2 id="receive-event-data-from-chat-module">Receive Event data from chat module</h2>
+<p>The chat module sends app and tracking event messages to the parent HTML page via <code>postMessage</code>.</p>
+<p>Listening to messages from the iFrame in the parent window:</p>
+<pre><code class="javascript">window.addEventListener(&quot;message&quot;, (ev) =&gt; {
+  if (ev.origin == &quot;http://localhost:4200&quot;) {
+    // var message = JSON.parse(ev.data);
+  }
+});
+</code></pre>
+
+<p>Message format:</p>
+<pre><code class="typescript">{
+  type: &quot;appEvent&quot; | &quot;trackingEvent&quot;,
+  payload: {
+    category: String, // optional
+    action: String, // optional
+    label: String, // optional
+    value: Number, // optional
+  }
 }
 </code></pre>
-<p>The code above obtains a reference to the <code>OverlayView</code> instance and
-registers an instance providing several callbacks:</p>
-<ul>
-<li><code>getCurrentPosition</code> returns the videos current time signal as a UNIX timestamp 
-(using seconds, not milliseconds) defining the current time of the video stream, 
-which is required for synchronizing data received from some event feed API (e.g. goal scored)</li>
-<li><code>fakeTouch</code> This method is called from the overlay. The overlay consumes all touch events so that
-no video controls are shown if a button etc is touched. But if an empty space is touched we want to show the
-controls so we call the fakeTouch method. In this method you have to implement a way to show your video players
-controls. The example above shows how the controls of a native android VideoView are shown.</li>
-<li><code>getBroadcastId</code> returns the unique identifier of the video content. Assuming a CMS renders out 
-a page for each streamed video, this identifier would be embedded into that page by the CMS</li>
-<li><code>getTenantId</code> returns the id that identifies you as a tenant/customer (we give this to you)</li>
-<li><code>getUserToken</code> returns some token/session-attribute that identifies a user. This token will
-be parsed by a backend customization, which we implement as part of your tenant setup</li>
-<li><code>getAppType</code> returns the type of the application which useses the overlay. A mobile app would return "APP"</li>
-</ul>
+
+<h3 id="example-message-anonymous-user-tries-to-send-a-message">Example Message: Anonymous user tries to send a message</h3>
+<pre><code class="javascript">{
+  type: &quot;appEvent&quot;,
+  payload: {
+    category: &quot;anonymousUser&quot;,
+    action: &quot;send&quot;,
+    label: &quot;chat&quot;,
+  }
+}
+</code></pre>
               
             </div>
           </div>
